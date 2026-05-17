@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mai Muhammad | Content Strategist & Creator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ==================================
+           VARIABLES & RESET
+        ================================== */
+        :root {
+            --bg: #070707;
+            --primary: #9D4EDD;
+            --glow: #C77DFF;
+            --text: #F5F5F5;
+            --text-muted: #A0A0A0;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --font-head: 'Lato', sans-serif;
+            --font-body: 'Cairo', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        h1, h2, h3, h4, h5, h6, .heading-font {
+            font-family: var(--font-head);
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--glow);
+        }
+
+        /* ==================================
+           EFFECTS & LAYERS
+        ================================== */
+        .grain {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.04;
+            background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+        }
+
+        .cursor-dot, .cursor-outline {
+            position: fixed;
+            top: 0; left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 100000;
+            pointer-events: none;
+        }
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--glow);
+        }
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--primary);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+        .cursor-outline.hover {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(157, 78, 221, 0.1);
+            border-color: var(--glow);
+        }
+
+        .loader {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: var(--bg);
+            z-index: 99998;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .loader-logo {
+            font-size: 2.5rem;
+            font-family: var(--font-head);
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            position: relative;
+            color: var(--text);
+            text-shadow: 0 0 20px var(--primary);
+            animation: pulseText 2s infinite;
+        }
+        .loader-ring {
+            width: 50px;
+            height: 50px;
+            border: 3px solid transparent;
+            border-top-color: var(--glow);
+            border-radius: 50%;
+            margin-top: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        /* PREMIUM SMOOTH SCROLL REVEAL ANIMATION */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px) scale(0.98);
+            transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1), opacity 1s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .bg-glow {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(150px);
+            opacity: 0.25;
+            z-index: -1;
+            animation: floatGlow 10s ease-in-out infinite alternate;
+        }
+        .glow-1 { top: 10%; left: -10%; width: 400px; height: 400px; background: var(--primary); }
+        .glow-2 { top: 40%; right: -10%; width: 500px; height: 500px; background: #6a00ff; }
+        .glow-3 { bottom: 10%; left: 20%; width: 300px; height: 300px; background: var(--glow); }
+
+        /* Canvas background specifically for the Hero section */
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* ==================================
+           COMPONENTS
+        ================================== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 32px;
+            font-family: var(--font-head);
+            font-weight: 700;
+            font-size: 1rem;
+            border-radius: 50px;
+            transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            border: 1px solid var(--glass-border);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #6a00ff);
+            box-shadow: 0 0 20px rgba(157, 78, 221, 0.3);
+            color: var(--text);
+            border: none;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 0 30px rgba(199, 125, 255, 0.6);
+        }
+        .btn-outline {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            color: var(--text);
+        }
+        .btn-outline:hover {
+            background: rgba(157, 78, 221, 0.15);
+            border-color: var(--glow);
+            box-shadow: 0 0 20px rgba(157, 78, 221, 0.2);
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 0 25px rgba(157, 78, 221, 0.25);
+            border-color: rgba(199, 125, 255, 0.4);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .section-header h2 {
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(157, 78, 221, 0.3);
+        }
+        .section-header p {
+            color: var(--glow);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* ==================================
+           NAVBAR (FIXED MOBILE CLASHING & Z-INDEX)
+        ================================== */
+        nav {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 9999; /* Higher priority to stay safe from scrolling layers */
+            transition: all 0.4s ease;
+        }
+        nav.scrolled {
+            background: rgba(7, 7, 7, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 15px 5%;
+        }
+        .logo {
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: var(--text);
+            text-shadow: 0 0 15px var(--primary);
+        }
+        .nav-links { display: none; }
+        .hamburger { 
+            display: block; 
+            font-size: 1.5rem; 
+            color: var(--text); 
+            transition: opacity 0.2s ease, color 0.3s;
+            z-index: 10000;
+        }
+        .hamburger.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .mobile-menu {
+            position: fixed;
+            top: -100%; left: 0;
+            width: 100%; height: 100vh;
+            background: rgba(7, 7, 7, 0.99);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            z-index: 99999; /* Absolute topmost wrapper */
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: top 0.6s cubic-bezier(0.85, 0, 0.15, 1);
+        }
+        .mobile-menu.active { top: 0; }
+        .mobile-menu a {
+            font-family: var(--font-head); 
+            font-size: 1.8rem; 
+            margin: 12px 0; 
+            font-weight: 700;
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            color: var(--text-muted);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: color 0.3s, transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s;
+        }
+        .mobile-menu.active a {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .mobile-menu.active a:nth-child(2) { transition-delay: 0.1s; }
+        .mobile-menu.active a:nth-child(3) { transition-delay: 0.15s; }
+        .mobile-menu.active a:nth-child(4) { transition-delay: 0.2s; }
+        .mobile-menu.active a:nth-child(5) { transition-delay: 0.25s; }
+        .mobile-menu.active a:nth-child(6) { transition-delay: 0.3s; }
+        .mobile-menu.active a:nth-child(7) { transition-delay: 0.35s; }
+        .mobile-menu.active a:nth-child(8) { transition-delay: 0.4s; }
+
+        .mobile-menu a:hover, .mobile-menu a.active { 
+            color: var(--glow); text-shadow: 0 0 15px var(--primary); 
+        }
+        .close-menu { 
+            position: absolute; top: 25px; right: 5%; font-size: 1.8rem; 
+            color: var(--text); transition: color 0.3s;
+        }
+        .close-menu:hover { color: var(--glow); }
+
+        /* ==================================
+           HERO SECTION
+        ================================== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 5% 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            gap: 40px;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-text {
+            flex: 1; display: flex; flex-direction: column; justify-content: center; text-align: center;
+        }
+        .hero-text h1 {
+            font-size: 3.2rem; font-weight: 900; line-height: 1.1; margin-bottom: 10px;
+            background: linear-gradient(to right, #fff, var(--glow));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 40px rgba(157, 78, 221, 0.4);
+        }
+        .typing-container {
+            font-size: 1.4rem; font-family: var(--font-head); font-weight: 700; color: var(--glow);
+            margin-bottom: 20px; min-height: 36px;
+        }
+        .typing-text { border-right: 2px solid var(--glow); padding-right: 5px; animation: blink 0.75s step-end infinite; }
+        .hero-text p {
+            font-size: 1.05rem; color: var(--text-muted); margin-bottom: 35px; max-width: 500px; margin-inline: auto;
+        }
+        .hero-btns { display: flex; gap: 15px; flex-direction: column; align-items: center; width: 100%; }
+        .hero-btns .btn { width: 100%; max-width: 280px; }
+        
+        .hero-socials {
+            display: flex; justify-content: center; gap: 15px; margin-top: 25px;
+        }
+        .hero-socials a {
+            font-size: 1.3rem; width: 45px; height: 45px; border-radius: 50%;
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            display: flex; justify-content: center; align-items: center; transition: background 0.3s, box-shadow 0.3s;
+        }
+        .hero-socials a:hover {
+            background: var(--primary); box-shadow: 0 0 15px var(--glow);
+        }
+
+        .hero-visual {
+            flex: 1; position: relative; display: flex; justify-content: center; align-items: center; width: 100%;
+        }
+        
+        .hero-image-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto;
+            border-radius: 24px;
+            padding: 8px;
+            background: rgba(157, 78, 221, 0.08);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 0 40px rgba(157, 78, 221, 0.2);
+            z-index: 5;
+            transition: border-color 0.4s, box-shadow 0.4s;
+        }
+        .hero-image-wrapper:hover {
+            border-color: rgba(199, 125, 255, 0.4); box-shadow: 0 0 50px rgba(157, 78, 221, 0.4);
+        }
+        .hero-img {
+            width: 100%; height: auto; border-radius: 16px; object-fit: cover; display: block;
+        }
+
+        .floating-element {
+            position: absolute; background: var(--glass-bg); backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border); border-radius: 12px; padding: 10px 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex; align-items: center; gap: 10px; z-index: 10;
+        }
+        .floating-element i { font-size: 1.2rem; color: var(--glow); }
+        .floating-element div { display: flex; flex-direction: column; text-align: left; }
+        .floating-element span:first-child { font-weight: bold; font-family: var(--font-head); font-size: 0.8rem;}
+        .floating-element span:last-child { font-size: 0.7rem; color: var(--text-muted); }
+        
+        .el-1 { top: -15px; left: -10px; }
+        .el-2 { bottom: 15px; right: -15px; }
+
+        /* ==================================
+           ABOUT SECTION
+        ================================== */
+        .about { padding: 100px 5%; position: relative; }
+        .about-content { display: grid; grid-template-columns: 1fr; gap: 40px; }
+        .about-text p { font-size: 1.1rem; line-height: 1.8; color: var(--text-muted); margin-bottom: 20px; }
+        .about-text strong { color: var(--text); }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; margin-top: 30px; }
+        .stat-card { text-align: center; padding: 20px; }
+        .stat-num { font-size: 2.3rem; font-family: var(--font-head); font-weight: 900; color: var(--glow); text-shadow: 0 0 15px rgba(199, 125, 255, 0.4); margin-bottom: 5px; }
+        .stat-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* ==================================
+           SERVICES & INDUSTRIES SECTION
+        ================================== */
+        .services, .industries { padding: 100px 5%; }
+        .grid-container { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        .service-card { text-align: center; }
+        .service-icon {
+            width: 70px; height: 70px; margin: 0 auto 20px; border-radius: 50%;
+            background: rgba(157, 78, 221, 0.1); display: flex; justify-content: center; align-items: center;
+            font-size: 2rem; color: var(--glow); border: 1px solid var(--primary);
+            box-shadow: 0 0 20px rgba(157, 78, 221, 0.2); transition: background 0.4s, color 0.4s, box-shadow 0.4s;
+        }
+        .service-card:hover .service-icon { background: var(--primary); color: #fff; box-shadow: 0 0 30px var(--glow); }
+        .service-card h3 { margin-bottom: 15px; font-size: 1.3rem; }
+        
+        .industry-card { display: flex; align-items: center; gap: 20px; position: relative; overflow: hidden; }
+        .industry-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--glow)); opacity: 0; transition: opacity 0.3s;
+        }
+        .industry-card:hover::before { opacity: 1; }
+
+        /* ==================================
+           TOOLS SECTION
+        ================================== */
+        .tools { padding: 100px 5%; text-align: center; }
+        .tools-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
+        .tool-badge {
+            background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 12px 24px;
+            border-radius: 50px; font-family: var(--font-head); font-weight: 700;
+            display: flex; align-items: center; gap: 10px; transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .tool-badge:hover { border-color: var(--glow); box-shadow: 0 0 20px rgba(199, 125, 255, 0.3); }
+
+        /* ==================================
+           PROJECTS SECTION
+        ================================== */
+        .projects { padding: 100px 5%; }
+        .projects-grid { display: grid; grid-template-columns: 1fr; gap: 25px; }
+        .project-card {
+            position: relative; border-radius: 20px; overflow: hidden; aspect-ratio: 4/5;
+            background: #111; border: 1px solid var(--glass-border);
+            display: flex; flex-direction: column; justify-content: flex-end; cursor: none;
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+        .project-card:hover { border-color: var(--primary); box-shadow: 0 0 30px rgba(157, 78, 221, 0.25); }
+
+        .project-media {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; z-index: 0; transition: transform 0.6s ease;
+        }
+        .project-card:hover .project-media { transform: scale(1.05); }
+
+        .project-overlay-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.65) 50%, rgba(0,0,0,0.1) 100%);
+            z-index: 1;
+        }
+
+        .project-content {
+            position: relative; z-index: 2; padding: 25px;
+            display: flex; flex-direction: column; gap: 10px;
+            text-align: left;
+        }
+        .project-title { font-family: var(--font-head); font-size: 1.4rem; font-weight: 800; color: var(--text); }
+        
+        .project-desc { 
+            font-size: 0.95rem; 
+            line-height: 1.6; 
+            color: #E2E8F0; 
+            opacity: 0.8;  
+            text-shadow: 0 2px 4px rgba(0,0,0,0.9);
+            transition: opacity 0.4s ease; 
+        }
+        .project-card:hover .project-desc { opacity: 1; }
+        
+        .project-action { opacity: 0.5; transition: opacity 0.4s ease; margin-top: 5px; }
+        .project-card:hover .project-action { opacity: 1; }
+        .project-action .btn { padding: 10px 22px; font-size: 0.85rem; }
+
+        /* ==================================
+           WHY ME SECTION (HUMANIZED & VALUE-DRIVEN)
+        ================================== */
+        .why-me { padding: 100px 5%; }
+        .timeline { position: relative; max-width: 800px; margin: 0 auto; }
+        .timeline::before {
+            content: ''; position: absolute; top: 0; left: 20px; height: 100%; width: 2px;
+            background: rgba(157, 78, 221, 0.3);
+        }
+        .timeline-item { position: relative; padding-left: 50px; margin-bottom: 40px; }
+        .timeline-item::before {
+            content: ''; position: absolute; left: 14px; top: 5px; width: 14px; height: 14px;
+            border-radius: 50%; background: var(--glow); box-shadow: 0 0 10px var(--primary);
+        }
+        .timeline-item h3 { font-size: 1.3rem; margin-bottom: 10px; color: var(--text); font-weight: 800; }
+        .timeline-item p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
+
+        /* ==================================
+           CONTACT SECTION
+        ================================== */
+        .contact { padding: 100px 5%; text-align: center; position: relative; }
+        .contact-container { max-width: 900px; margin: 0 auto; }
+        .contact-cta { 
+            font-size: 2.2rem; font-family: var(--font-head); font-weight: 900; 
+            margin-bottom: 45px; color: var(--glow); text-shadow: 0 0 20px rgba(157, 78, 221, 0.3); 
+        }
+        .contact-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 45px; }
+        .contact-card-premium {
+            background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 25px;
+            border-radius: 20px; display: flex; align-items: center; gap: 20px; text-align: left;
+            transition: border-color 0.4s, box-shadow 0.4s, background 0.4s;
+        }
+        .contact-card-premium:hover {
+            border-color: var(--primary); box-shadow: 0 0 30px rgba(157, 78, 221, 0.15); background: rgba(157, 78, 221, 0.05);
+        }
+        .contact-icon-wrapper {
+            width: 55px; height: 55px; border-radius: 50%; background: rgba(157, 78, 221, 0.1);
+            display: flex; justify-content: center; align-items: center; font-size: 1.4rem; color: var(--glow);
+            border: 1px solid rgba(157, 78, 221, 0.3);
+        }
+        .contact-details { display: flex; flex-direction: column; gap: 4px; }
+        .contact-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .contact-value { font-size: 1.05rem; font-weight: bold; font-family: var(--font-head); color: var(--text); word-break: break-all; }
+
+        /* Floating WhatsApp Icon */
+        .floating-wa {
+            position: fixed; bottom: 25px; right: 25px;
+            width: 55px; height: 55px; background: #25D366; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 1.8rem; color: #fff; z-index: 1000;
+            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.4);
+            transition: box-shadow 0.3s, background-color 0.3s;
+        }
+        .floating-wa:hover { box-shadow: 0 15px 30px rgba(37, 211, 102, 0.6); background-color: #20ba56; }
+
+        /* PREMIUM MINIMAL FOOTER */
+        footer {
+            text-align: center; padding: 40px 5%; border-top: 1px solid var(--glass-border);
+            background: #040404; font-family: var(--font-head); font-size: 0.85rem; color: var(--text-muted); letter-spacing: 1px;
+        }
+        footer span { color: var(--glow); text-shadow: 0 0 10px var(--primary); font-weight: bold; }
+
+        /* ==================================
+           ANIMATIONS & RESPONSIVENESS
+        ================================== */
+        @keyframes blink { 50% { border-color: transparent; } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulseText { 0%, 100% { opacity: 1; text-shadow: 0 0 20px var(--primary); } 50% { opacity: 0.5; text-shadow: 0 0 40px var(--glow); } }
+        @keyframes floatGlow { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(20px, 30px) scale(1.1); } }
+
+        @media (min-width: 768px) {
+            .hero-container { flex-direction: row; align-items: center; gap: 50px; }
+            .hero-text { text-align: left; }
+            .hero-text h1 { font-size: 4rem; }
+            .hero-text p { margin-inline: 0; }
+            .hero-btns { flex-direction: row; }
+            .hero-btns .btn { width: auto; }
+            .hero-socials { justify-content: flex-start; }
+            .hero-image-wrapper { max-width: 380px; }
+            
+            .about-content { grid-template-columns: 1fr 1fr; align-items: center; }
+            .grid-container { grid-template-columns: repeat(2, 1fr); }
+            .projects-grid { grid-template-columns: repeat(2, 1fr); }
+            .contact-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (min-width: 1024px) {
+            .hamburger { display: none; }
+            .nav-links { display: flex; gap: 30px; align-items: center; }
+            .nav-links a {
+                font-family: var(--font-head); font-weight: 700; font-size: 0.9rem; text-transform: uppercase;
+                letter-spacing: 1px; position: relative; transition: color 0.3s;
+            }
+            .nav-links a::after {
+                content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; left: 0;
+                background: var(--glow); transition: width 0.3s; box-shadow: 0 0 10px var(--primary);
+            }
+            .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+            .nav-links a:hover, .nav-links a.active { color: var(--glow); }
+            
+            .hero-text h1 { font-size: 5rem; }
+            .grid-container { grid-template-columns: repeat(3, 1fr); }
+            .projects-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="grain"></div>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <div class="loader" id="loader">
+        <div class="loader-logo">Mai Muhammad</div>
+        <div class="loader-ring"></div>
+    </div>
+
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+    <div class="bg-glow glow-3"></div>
+
+    <nav id="navbar">
+        <a href="#home" class="logo">MAI.</a>
+        <div class="hamburger" id="hamburger"><i class="fas fa-bars"></i></div>
+        <ul class="nav-links">
+            <li><a href="#home" class="active">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#industries">Industries</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#why-me">Why Me</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="close-menu" id="close-menu"><i class="fas fa-times"></i></div>
+        <a href="#home" class="mobile-link">Home</a>
+        <a href="#about" class="mobile-link">About</a>
+        <a href="#services" class="mobile-link">Services</a>
+        <a href="#industries" class="mobile-link">Industries</a>
+        <a href="#projects" class="mobile-link">Projects</a>
+        <a href="#why-me" class="mobile-link">Why Me</a>
+        <a href="#contact" class="mobile-link">Contact</a>
+    </div>
+
+    <section class="hero" id="home">
+        <canvas id="hero-canvas"></canvas>
+
+        <div class="hero-container">
+            <div class="hero-text reveal">
+                <h1>Mai Muhammad</h1>
+                <div class="typing-container">
+                    <span class="typing-text" id="typewriter"></span>
+                </div>
+                <p>I help brands turn ideas into scroll-stopping content experiences.</p>
+                <div class="hero-btns">
+                    <a href="#projects" class="btn btn-primary">View Projects <i class="fas fa-arrow-right" style="margin-left:8px;"></i></a>
+                    <a href="#contact" class="btn btn-outline">Let's Work Together</a>
+                </div>
+                
+                <div class="hero-socials">
+                    <a href="https://wa.me/201023191002" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://www.linkedin.com/in/mai-muhammad-6381651b8?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="mailto:maim3587663@gmail.com"><i class="fas fa-envelope"></i></a>
+                </div>
+            </div>
+            
+            <div class="hero-visual reveal">
+                <div class="hero-image-wrapper">
+                    <img src="1.webp" alt="Mai Muhammad" class="hero-img">
+                    
+                    <div class="floating-element el-1">
+                        <i class="fas fa-chart-line"></i>
+                        <div><span>Engagement</span><span>Skyrocketed</span></div>
+                    </div>
+                    <div class="floating-element el-2">
+                        <i class="fas fa-lightbulb"></i>
+                        <div><span>Creative Ideas</span><span>Out of the Box</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about" id="about">
+        <div class="section-header reveal">
+            <h2>The Storyteller</h2>
+            <p>Behind The Content</p>
+        </div>
+        <div class="about-content">
+            <div class="about-text glass-card reveal">
+                <p>I am <strong>Mai Muhammad</strong>, a Content Creator & Content Strategist with 3 years of experience working across freelance landscapes and modern agencies.</p>
+                <p>My portfolio spans across borders and markets. I've designed campaigns for <strong>Dubai real estate</strong> companies, built local tourism content for <strong>Saudi Arabia</strong>, and managed shipping & medical brand channels in <strong>Turkey</strong>. From educational groups to fitness centers in Kuwait, I build content frameworks that work globally.</p>
+                <p>I focus on deep audience psychology. I create the actual strategies, write hooks that stick, map out engaging video scripts, and bring fresh ideas that help brands grow organically.</p>
+            </div>
+            <div class="stats-grid reveal">
+                <div class="glass-card stat-card">
+                    <div class="stat-num">3+</div>
+                    <div class="stat-label">Years Exp.</div>
+                </div>
+                <div class="glass-card stat-card">
+                    <div class="stat-num">50+</div>
+                    <div class="stat-label">Projects</div>
+                </div>
+                <div class="glass-card stat-card">
+                    <div class="stat-num">100+</div>
+                    <div class="stat-label">Creative Ideas</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="services" id="services">
+        <div class="section-header reveal">
+            <h2>My Expertise</h2>
+            <p>What I Do Best</p>
+        </div>
+        <div class="grid-container">
+            <div class="glass-card service-card reveal">
+                <div class="service-icon"><i class="fas fa-chess-knight"></i></div>
+                <h3>Content Strategy</h3>
+                <p style="color:var(--text-muted); font-size:0.9rem;">Building clean content maps that match your business goals and grow your audience.</p>
+            </div>
+            <div class="glass-card service-card reveal">
+                <div class="service-icon"><i class="fas fa-file-video"></i></div>
+                <h3>Script Writing</h3>
+                <p style="color:var(--text-muted); font-size:0.9rem;">Writing powerful short-form hooks and video structures that boost watch time.</p>
+            </div>
+            <div class="glass-card service-card reveal">
+                <div class="service-icon"><i class="fas fa-brain"></i></div>
+                <h3>Creative Video Ideas</h3>
+                <p style="color:var(--text-muted); font-size:0.9rem;">Developing unique viral-ready concepts that stand out on noisy feeds.</p>
+            </div>
+            <div class="glass-card service-card reveal">
+                <div class="service-icon"><i class="fas fa-calendar-alt"></i></div>
+                <h3>Content Planning</h3>
+                <p style="color:var(--text-muted); font-size:0.9rem;">Organizing structured, reliable calendars to keep your brand consistently active.</p>
+            </div>
+            <div class="glass-card service-card reveal">
+                <div class="service-icon"><i class="fas fa-pen-fancy"></i></div>
+                <h3>Caption Writing</h3>
+                <p style="color:var(--text-muted); font-size:0.9rem;">Writing clear, natural copy that connects emotionally and prompts real action.</p>
+            </div>
+            <div class="glass-card service-card reveal">
+                <div class="service-icon"><i class="fas fa-users"></i></div>
+                <h3>Audience Analysis</h3>
+                <p style="color:var(--text-muted); font-size:0.9rem;">Studying community metrics to tailor messaging that feels authentic to your followers.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="industries" id="industries">
+        <div class="section-header reveal">
+            <h2>Industries</h2>
+            <p>Global Market Experience</p>
+        </div>
+        <div class="grid-container">
+            <div class="glass-card industry-card reveal">
+                <i class="fas fa-building" style="font-size:2rem; color:var(--primary);"></i>
+                <h3 style="font-family:var(--font-head);">Real Estate (Dubai & Sharjah)</h3>
+            </div>
+            <div class="glass-card industry-card reveal">
+                <i class="fas fa-plane-departure" style="font-size:2rem; color:var(--primary);"></i>
+                <h3 style="font-family:var(--font-head);">Tourism (KSA)</h3>
+            </div>
+            <div class="glass-card industry-card reveal">
+                <i class="fas fa-heartbeat" style="font-size:2rem; color:var(--primary);"></i>
+                <h3 style="font-family:var(--font-head);">Medical (Turkey)</h3>
+            </div>
+            <div class="glass-card industry-card reveal">
+                <i class="fas fa-graduation-cap" style="font-size:2rem; color:var(--primary);"></i>
+                <h3 style="font-family:var(--font-head);">Education</h3>
+            </div>
+            <div class="glass-card industry-card reveal">
+                <i class="fas fa-ship" style="font-size:2rem; color:var(--primary);"></i>
+                <h3 style="font-family:var(--font-head);">Shipping (Turkey)</h3>
+            </div>
+            <div class="glass-card industry-card reveal">
+                <i class="fas fa-dumbbell" style="font-size:2rem; color:var(--primary);"></i>
+                <h3 style="font-family:var(--font-head);">Fitness Centers (Kuwait)</h3>
+            </div>
+        </div>
+    </section>
+
+    <section class="tools" id="tools">
+        <div class="section-header reveal">
+            <h2>My Magic Tools</h2>
+            <p>Let's make wonderful content together.</p>
+        </div>
+        <div class="tools-grid reveal">
+            <div class="tool-badge"><i class="fas fa-robot"></i> ChatGPT</div>
+            <div class="tool-badge"><i class="fas fa-sparkles"></i> Claude</div>
+            <div class="tool-badge"><i class="fas fa-brain"></i> Gemini</div>
+            <div class="tool-badge"><i class="fas fa-paint-brush"></i> Canva</div>
+            <div class="tool-badge"><i class="fas fa-video"></i> CapCut</div>
+            <div class="tool-badge"><i class="fab fa-meta"></i> Meta Suite</div>
+            <div class="tool-badge"><i class="fas fa-tasks"></i> ClickUp</div>
+        </div>
+    </section>
+
+    <section class="projects" id="projects">
+        <div class="section-header reveal">
+            <h2>Selected Works</h2>
+            <p>Cinematic Reels & Strategy</p>
+        </div>
+        <div class="projects-grid">
+            
+            <div class="project-card reveal">
+                <video autoplay loop muted playsinline class="project-media">
+                    <source src="0.mp4" type="video/mp4">
+                </video>
+                <div class="project-overlay-bg"></div>
+                <div class="project-content">
+                    <h4 class="project-title">Sharjah Investment Launch</h4>
+                    <p class="project-desc">Real estate content highlighting sustainable community growth, flexible investment plans, and premium airport proximity near University City.</p>
+                    <div class="project-action">
+                        <a href="https://www.instagram.com/reel/DSc2NmEjMX6/?igsh=MXNobDZmMWtidHliMQ%3D%3D" target="_blank" class="btn btn-outline">
+                            View Project <i class="fab fa-instagram" style="margin-left:8px;"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card reveal">
+                <video autoplay loop muted playsinline class="project-media">
+                    <source src="1.mp4" type="video/mp4">
+                </video>
+                <div class="project-overlay-bg"></div>
+                <div class="project-content">
+                    <h4 class="project-title">Al-Furqan Clinics</h4>
+                    <p class="project-desc">Medical awareness script detailing health guidelines and benefits of safe therapeutic Hijama treatments under professional care.</p>
+                    <div class="project-action">
+                        <a href="https://www.instagram.com/reel/DUnzIqCCFTU/?igsh=NzNnd3RmaWNteHBz" target="_blank" class="btn btn-outline">
+                            View Reel <i class="fab fa-instagram" style="margin-left:8px;"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card reveal">
+                <video autoplay loop muted playsinline class="project-media">
+                    <source src="2.mp4" type="video/mp4">
+                </video>
+                <div class="project-overlay-bg"></div>
+                <div class="project-content">
+                    <h4 class="project-title">ARAZEX Logistics</h4>
+                    <p class="project-desc">B2C video strategy showcasing secure, door-to-door relocation services from Turkey to Syria with high safety packaging protocols.</p>
+                    <div class="project-action">
+                        <a href="https://www.instagram.com/reel/DUlWQwpjJOM/?igsh=Ym9pZ3p3NW9tYzE%3D" target="_blank" class="btn btn-outline">
+                            View Reel <i class="fab fa-instagram" style="margin-left:8px;"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card reveal">
+                <img src="3.webp" alt="Project 3" class="project-media">
+                <div class="project-overlay-bg"></div>
+                <div class="project-content">
+                    <h4 class="project-title">Al-Asala Travel</h4>
+                    <p class="project-desc">A highly engaging social guide mapping out smart, essential travel hacks for transportation and dining to optimize trip comfort.</p>
+                    <div class="project-action">
+                        <a href="https://www.instagram.com/p/DPqp8r3DC01/?igsh=bW0yMTk3NjJnZ3px" target="_blank" class="btn btn-outline">
+                            View Post <i class="fab fa-instagram" style="margin-left:8px;"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card reveal">
+                <video autoplay loop muted playsinline class="project-media">
+                    <source src="4.mp4" type="video/mp4">
+                </video>
+                <div class="project-overlay-bg"></div>
+                <div class="project-content">
+                    <h4 class="project-title">Inkwell Planners</h4>
+                    <p class="project-desc">Creative conceptual strategy tracking purposeful habit building and conscious lifestyle organizing routines during Ramadan.</p>
+                    <div class="project-action">
+                        <a href="https://www.instagram.com/reel/DVBOxyLDDCx/?igsh=MWEwN3k0emF6bnZkaw%3D%3D" target="_blank" class="btn btn-outline">
+                            View Reel <i class="fab fa-instagram" style="margin-left:8px;"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card reveal">
+                <video autoplay loop muted playsinline class="project-media">
+                    <source src="5.mp4" type="video/mp4">
+                </video>
+                <div class="project-overlay-bg"></div>
+                <div class="project-content">
+                    <h4 class="project-title">Premium Salon Campaign</h4>
+                    <p class="project-desc">Relatable hair health copywriting highlighting the natural restorative properties of Black Garlic care services for an elite salon market.</p>
+                    <div class="project-action">
+                        <a href="https://www.instagram.com/reel/DK0AExTu0nQ/?igsh=MTllY201MXFtMmZsYg== " target="_blank" class="btn btn-outline">
+                            View Reel <i class="fab fa-instagram" style="margin-left:8px;"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="why-me" id="why-me">
+        <div class="section-header reveal">
+            <h2>The Real Value</h2>
+            <p>What I Bring to Your Business</p>
+        </div>
+        <div class="timeline">
+            <div class="timeline-item reveal">
+                <h3>Strict Punctuality</h3>
+                <p>Your content calendar never waits. I value your time and business schedule, ensuring every strategy script, asset layout, and final creative plan is delivered exactly when promised.</p>
+            </div>
+            <div class="timeline-item reveal">
+                <h3>High Quality That Converts</h3>
+                <p>Aesthetically beautiful copy is useless if it doesn't perform. I structure content tailored directly to your real audience to hit measurable KPIs—whether that's video views, shares, or high-intent inbound sales.</p>
+            </div>
+            <div class="timeline-item reveal">
+                <h3>100% Original, Non-Automated Value</h3>
+                <p>No basic, robotic AI fluff or copy-pasted templates. Every concept is engineered fresh, offering actual human depth and genuine brand storytelling that readers instinctively trust.</p>
+            </div>
+            <div class="timeline-item reveal">
+                <h3>Realistic, Executable Plans</h3>
+                <p>I don't deliver over-complicated, messy theories. I hand you simple, reliable, actionable production plans designed from the start to generate fruitful, scalable long-term growth.</p>
+            </div>
+            <div class="timeline-item reveal">
+                <h3>Organized Project Workflow</h3>
+                <p>From initial brainstorming sessions to the final video optimization steps, I manage the complete creative production pipeline cleanly, allowing you to run your business with total peace of mind.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact" id="contact">
+        <div class="contact-container">
+            <h2 class="contact-cta reveal">Let’s Build Content People Remember.</h2>
+            
+            <div class="contact-grid">
+                <a href="mailto:maim3587663@gmail.com" class="contact-card-premium reveal">
+                    <div class="contact-icon-wrapper"><i class="fas fa-envelope"></i></div>
+                    <div class="contact-details">
+                        <span class="contact-label">Email Me</span>
+                        <span class="contact-value">maim3587663@gmail.com</span>
+                    </div>
+                </a>
+                <a href="https://wa.me/201023191002" target="_blank" class="contact-card-premium reveal">
+                    <div class="contact-icon-wrapper"><i class="fab fa-whatsapp"></i></div>
+                    <div class="contact-details">
+                        <span class="contact-label">WhatsApp</span>
+                        <span class="contact-value">01023191002</span>
+                    </div>
+                </a>
+                <div class="contact-card-premium reveal">
+                    <div class="contact-icon-wrapper"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="contact-details">
+                        <span class="contact-label">Location</span>
+                        <span class="contact-value">Cairo, Egypt</span>
+                    </div>
+                </div>
+                <div class="contact-card-premium reveal">
+                    <div class="contact-icon-wrapper"><i class="fas fa-laptop-house"></i></div>
+                    <div class="contact-details">
+                        <span class="contact-label">Availability</span>
+                        <span class="contact-value">Remote & On-site</span>
+                    </div>
+                </div>
+            </div>
+
+            <a href="mailto:maim3587663@gmail.com" class="btn btn-primary reveal" style="font-size:1.2rem; padding: 18px 40px;">Start a Project <i class="fas fa-paper-plane" style="margin-left:10px;"></i></a>
+        </div>
+    </section>
+
+    <a href="https://wa.me/201023191002" target="_blank" class="floating-wa">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <footer>
+        <p>© 2026 <span>Mai Muhammad</span>. Turning Ideas Into Scroll-Stopping Content Experiences.</p>
+    </footer>
+
+    <script>
+        // --- Loader ---
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+            }, 800);
+            initParticles(); // Setup the custom canvas interaction
+        });
+
+        // --- Custom Cursor ---
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+        
+        if (window.matchMedia("(pointer: fine)").matches) {
+            window.addEventListener('mousemove', (e) => {
+                const posX = e.clientX;
+                const posY = e.clientY;
+                
+                cursorDot.style.left = `${posX}px`;
+                cursorDot.style.top = `${posY}px`;
+                
+                cursorOutline.animate({
+                    left: `${posX}px`,
+                    top: `${posY}px`
+                }, { duration: 500, fill: "forwards" });
+            });
+
+            const interactives = document.querySelectorAll('a, .btn, .hamburger, .close-menu, .project-card');
+            interactives.forEach(el => {
+                el.addEventListener('mouseenter', () => cursorOutline.classList.add('hover'));
+                el.addEventListener('mouseleave', () => cursorOutline.classList.remove('hover'));
+            });
+        } else {
+            cursorDot.style.display = 'none';
+            cursorOutline.style.display = 'none';
+            document.body.style.cursor = 'auto';
+        }
+
+        // --- Navbar Scroll & Active State ---
+        const navbar = document.getElementById('navbar');
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-links a');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 30) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - sectionHeight / 3)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // --- Mobile Menu Toggle (Fixed Z-Index & Sticky Overlap) ---
+        const hamburger = document.getElementById('hamburger');
+        const closeMenu = document.getElementById('close-menu');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        hamburger.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+            hamburger.classList.add('hidden');
+        });
+
+        closeMenu.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            hamburger.classList.remove('hidden');
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                hamburger.classList.remove('hidden');
+            });
+        });
+
+        // --- Typing Animation ---
+        const roles = ['Content Creator', 'Content Strategist', 'Creative Storyteller', 'Brand Content Expert'];
+        let roleIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typeTextElement = document.getElementById('typewriter');
+        
+        function typeEffect() {
+            const currentRole = roles[roleIndex];
+            
+            if (isDeleting) {
+                typeTextElement.textContent = currentRole.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typeTextElement.textContent = currentRole.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 50 : 100;
+
+            if (!isDeleting && charIndex === currentRole.length) {
+                typeSpeed = 2000;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                roleIndex = (roleIndex + 1) % roles.length;
+                typeSpeed = 500;
+            }
+
+            setTimeout(typeEffect, typeSpeed);
+        }
+        setTimeout(typeEffect, 1500);
+
+        // --- Premium Scroll Reveal Observer ---
+        const revealElements = document.querySelectorAll('.reveal');
+        
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); 
+                }
+            });
+        }, { 
+            threshold: 0.08,
+            rootMargin: "0px 0px -40px 0px"
+        });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // --- Pure Practical JS: Canvas Particle Mouse Interaction ---
+        function initParticles() {
+            const canvas = document.getElementById('hero-canvas');
+            const ctx = canvas.getContext('2d');
+            const parent = canvas.parentElement;
+
+            canvas.width = parent.clientWidth;
+            canvas.height = parent.clientHeight;
+
+            let particlesArray = [];
+            const numberOfParticles = 45;
+            const mouse = { x: null, y: null, radius: 120 };
+
+            window.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouse.x = e.clientX - rect.left;
+                mouse.y = e.clientY - rect.top;
+            });
+
+            window.addEventListener('mouseleave', () => {
+                mouse.x = null;
+                mouse.y = null;
+            });
+
+            window.addEventListener('resize', () => {
+                canvas.width = parent.clientWidth;
+                canvas.height = parent.clientHeight;
+            });
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2 + 1;
+                    this.speedX = Math.random() * 0.4 - 0.2;
+                    this.speedY = Math.random() * 0.4 - 0.2;
+                    this.alpha = Math.random() * 0.5 + 0.2;
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+
+                    if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                    if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+
+                    // Mouse gravity magnet interaction
+                    if (mouse.x != null && mouse.y != null) {
+                        let dx = mouse.x - this.x;
+                        let dy = mouse.y - this.y;
+                        let distance = Math.sqrt(dx * dx + dy * dy);
+                        if (distance < mouse.radius) {
+                            this.x += dx * 0.02;
+                            this.y += dy * 0.02;
+                        }
+                    }
+                }
+                draw() {
+                    ctx.save();
+                    ctx.globalAlpha = this.alpha;
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = '#C77DFF';
+                    ctx.fillStyle = '#9D4EDD';
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particlesArray.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
+</body>
+</html>
